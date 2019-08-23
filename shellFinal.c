@@ -363,7 +363,54 @@ char **shell_splitpipes(char* line)
     return args;
 }
 
+/*This updated version of shell_splitcommand() introduces quoting, so that filenames 
+with spaces can be used without any problems. In the previous version of the function, 
+the command was split only with respect to spaces which eliminated any possibility of using 
+filenames with spaces*/
+
 char **shell_splitcommand(char* line)
+{
+    int size = 64;
+    char temp[100];
+    char **argsquo = malloc(size * sizeof(char*));
+    char **args = malloc(size * sizeof(char*));
+    char* token = strtok(line, "\"\n");
+    int i=0;
+    while(token != NULL)
+    {
+        argsquo[i] = token;
+        token = strtok(NULL, "\"\n");
+        i++;
+    }
+    argsquo[i] = NULL;
+    int k = 0;
+    int j;
+    for(j=0;j<i;j++)
+    {
+        if(j%2!=0)
+        {
+            args[k] = argsquo[j];
+            k++;
+            continue;
+        }
+        token = strtok(argsquo[j], " ");
+        while(token != NULL)
+        {
+            args[k] = token;
+            token = strtok(NULL, " ");
+            k++;
+        }
+    }
+    args[k] = NULL;
+
+
+
+    return args;
+}
+
+/*This is the previous version of the function*/
+
+/*char **shell_splitcommand(char* line)
 {
     int size = 64;
     char **args = malloc(size * sizeof(char*));
@@ -377,4 +424,4 @@ char **shell_splitcommand(char* line)
     }
     args[i]=NULL;
     return args;
-}
+}*/
