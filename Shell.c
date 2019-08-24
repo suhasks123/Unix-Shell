@@ -221,6 +221,10 @@ void shell_execute(char **cmds)
             if(outputfile!=NULL)
             {
                 outputfd = open(outputfile, O_RDWR | O_CREAT | O_EXCL, 0666);
+                if(outputfd<0)
+                {
+                    outputfd = open(outputfile, O_RDWR | O_CREAT | O_TRUNC, 0666);
+                }
                 dup2(outputfd, 1);
             }
         }
@@ -229,6 +233,11 @@ void shell_execute(char **cmds)
             if(inputfile!=NULL)
             {
                 inputfd = open(inputfile, O_RDWR);
+                if(inputfd<0)
+                {
+                    perror("file");
+                    exit(1);
+                }
                 dup2(inputfd, 0);
             }
             close(pfd[0]);
