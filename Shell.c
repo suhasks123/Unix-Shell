@@ -78,14 +78,30 @@ void shell_loop()
         int k=0;
         int ird = -1;
         int ord = -1;
+        int ictr = 0;
+        int octr = 0;
+
         while(line[k]!='\0')
         {
             if(line[k]=='<')
+            {
                 ird = k;
+                ictr++;
+            }
             else if(line[k]=='>')
+            {
                 ord = k;
+                octr++;
+            }
             k++;
         }
+
+        if(ictr>1||octr>1)
+        {
+            printf("Invalid I/O redirection\n");
+            continue;
+        }
+        
         if(ird<ord)
         {
             outputredirect(line);
@@ -127,6 +143,14 @@ void shell_loop()
             args = shell_splitcommand(temp);
             if(strcmp(*args,"cd")==0)
             {
+                if(*(args+2)!=NULL)
+                {
+                    printf("cd: Invalid number of arguments\n");
+                    printf("Syntax: cd <path>\n");
+                    free(line);
+                    free(cmds);
+                    continue;
+                }
                 if(chdir(*(args+1))<0)
                 {
                     perror(*(args+1));
@@ -137,6 +161,13 @@ void shell_loop()
             }
             if(strcmp(*args,"pwd")==0)
             {
+                if(*(args+1)!=NULL)
+                {
+                    printf("pwd: Command does not need arguments\n");
+                    free(line);
+                    free(cmds);
+                    continue;
+                }
                 printf("%s\n", pth);
                 free(line);
                 free(cmds);
@@ -144,12 +175,26 @@ void shell_loop()
             }
             if(strcmp(*args,"exit")==0)
             {
+                if(*(args+1)!=NULL)
+                {
+                    printf("exit: Command does not need arguments\n");
+                    free(line);
+                    free(cmds);
+                    continue;
+                }
                 free(line);
                 free(cmds);
                 exit(0);
             }
             if(strcmp(*args,"help")==0)
             {
+                if(*(args+1)!=NULL)
+                {
+                    printf("help: Command does not need arguments\n");
+                    free(line);
+                    free(cmds);
+                    continue;
+                }
                 printf("An Implementation of a Unix-like Shell.\n");
                 printf("These are the built-in commands (Type help to view them):\n");
                 printf("cd <pathname>  : Changes current directory to the specified pathname.\n");
@@ -169,7 +214,6 @@ void shell_loop()
 
         rec = ctr;
         shell_execute(cmds);
-        //status = shell_execute(args);
 
         /*After the execution is done, we free the dynamically allocated line and cmds
         */
