@@ -195,12 +195,12 @@ void shell_loop()
                     free(cmds);
                     continue;
                 }
-                printf("An Implementation of a Unix-like Shell.\n");
+                printf("\nAn Implementation of a Unix-like Shell.\n");
                 printf("These are the built-in commands (Type help to view them):\n");
                 printf("cd <pathname>  : Changes current directory to the specified pathname.\n");
                 printf("pwd  : Displays the path of the current working directory.\n");
                 printf("exit  : Exits out of the current shell.\n\n");
-                printf("Use man <command> for detailed help on individual commands.\n");
+                printf("Use man <command> for detailed help on individual commands.\n\n");
                 free(line);
                 free(cmds);
                 continue;
